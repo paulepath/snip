@@ -1,0 +1,81 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:t="using:Snip"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Snip.App"
+             RequestedThemeVariant="Default">
+  <Application.Resources>
+    <ResourceDictionary>
+      <!-- Tools: drawn to fill (even-odd), 24x24 like the Material Design icons beside them -->
+      <StreamGeometry x:Key="SelectIcon">M6,3 L6,19 L10.2,14.9 L13.1,21 L15.6,19.9 L12.8,13.9 L18.6,13.9 Z</StreamGeometry>
+      <StreamGeometry x:Key="CropIcon">M6,2 H8 V16 H22 V18 H18 V22 H16 V18 H6 Z M2,6 H6 V8 H2 Z M10,6 H18 V14 H16 V8 H10 Z</StreamGeometry>
+      <StreamGeometry x:Key="ArrowIcon">M4,18.6 L15.6,7 H10 V5 H19 V14 H17 V8.4 L5.4,20 Z</StreamGeometry>
+      <StreamGeometry x:Key="RectIcon">M3,5 H21 V19 H3 Z M5,7 V17 H19 V7 Z</StreamGeometry>
+      <StreamGeometry x:Key="EllipseIcon">M3,12 A9,7 0 1,1 21,12 A9,7 0 1,1 3,12 Z M5,12 A7,5 0 1,0 19,12 A7,5 0 1,0 5,12 Z</StreamGeometry>
+      <StreamGeometry x:Key="PenIcon">M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z</StreamGeometry>
+      <StreamGeometry x:Key="TextIcon">M5,4 H19 V8 H17 V6 H13 V18 H15 V20 H9 V18 H11 V6 H7 V8 H5 Z</StreamGeometry>
+      <StreamGeometry x:Key="HighlightIcon">M3,20 H21 V22 H3 Z M14.5,3 L20,8.5 L11.5,17 H6 V11.5 Z M8,12.3 V15 H10.7 Z</StreamGeometry>
+      <StreamGeometry x:Key="PixelateIcon">M3,3 H9 V9 H3 Z M15,3 H21 V9 H15 Z M9,9 H15 V15 H9 Z M3,15 H9 V21 H3 Z M15,15 H21 V21 H15 Z</StreamGeometry>
+      <StreamGeometry x:Key="StepIcon">M3,12 A9,9 0 1,1 21,12 A9,9 0 1,1 3,12 Z M10.5,8.5 L13,7 H14 V17 H12 V9.6 L10.5,10.5 Z</StreamGeometry>
+      <!-- Material Design icons, as in the Notes window -->
+      <StreamGeometry x:Key="UndoIcon">M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z</StreamGeometry>
+      <StreamGeometry x:Key="RedoIcon">M18.4,10.6C16.55,9 14.15,8 11.5,8C6.85,8 2.92,11.03 1.54,15.22L3.9,16C4.95,12.81 7.96,10.5 11.5,10.5C13.45,10.5 15.23,11.22 16.62,12.38L13,16H22V7L18.4,10.6Z</StreamGeometry>
+      <StreamGeometry x:Key="CopyIcon">M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z</StreamGeometry>
+      <StreamGeometry x:Key="SaveIcon">M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z</StreamGeometry>
+      <StreamGeometry x:Key="FolderIcon">M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z</StreamGeometry>
+      <StreamGeometry x:Key="FileIcon">M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z</StreamGeometry>
+      <StreamGeometry x:Key="ThemeIcon">M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z</StreamGeometry>
+    </ResourceDictionary>
+  </Application.Resources>
+  <Application.Styles>
+    <FluentTheme />
+    <Style Selector="Window">
+      <Setter Property="Icon" Value="/Assets/snip.ico" />
+    </Style>
+    <!-- Buttons: an icon over a small label, as the Notes window's toolbar -->
+    <Style Selector="Button.tool, ToggleButton.tool">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Padding" Value="8,4" />
+      <Setter Property="MinWidth" Value="52" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Focusable" Value="False" />
+    </Style>
+    <Style Selector="Button.tool:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.tool PathIcon, ToggleButton.tool PathIcon">
+      <Setter Property="Width" Value="18" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.tool TextBlock.label, ToggleButton.tool TextBlock.label">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,3,0,0" />
+    </Style>
+    <Style Selector="ToggleButton.tool:checked /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{x:Static t:Palette.SelectedFill}" />
+      <Setter Property="Foreground" Value="{x:Static t:Palette.SelectedFillText}" />
+    </Style>
+    <!-- The colour swatches -->
+    <Style Selector="RadioButton.swatch">
+      <Setter Property="Width" Value="22" />
+      <Setter Property="Height" Value="22" />
+      <Setter Property="Margin" Value="2,0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Focusable" Value="False" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Ring" CornerRadius="11" BorderThickness="2" BorderBrush="Transparent" Padding="2">
+            <Border CornerRadius="8" Background="{TemplateBinding Background}" BorderThickness="1"
+                    BorderBrush="{x:Static t:Palette.BorderStrong}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="RadioButton.swatch:checked /template/ Border#Ring">
+      <Setter Property="BorderBrush" Value="{x:Static t:Palette.Accent}" />
+    </Style>
+  </Application.Styles>
+</Application>

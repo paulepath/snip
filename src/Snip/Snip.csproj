@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Snip: the screenshot tool. It lives in the tray, takes Print Screen (a region, a window or a monitor; or the
+       Pi Dash's screen while the mouse is there) and opens each shot in its editor. WinForms only for the tray icon,
+       the clipboard and reading images. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Snip</RootNamespace>
+    <AssemblyName>Snip</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\snip.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks> <!-- LibraryImport source generator -->
+    <Product>Snip</Product>
+    <!-- DPI awareness is in app.manifest on purpose: Snip never runs WinForms' Application.Run, and capture needs
+         per-monitor pixels from the first instruction. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WinForms and Avalonia both have these names; Snip means Avalonia's. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="MQTTnet" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\snip.ico" />
+    <EmbeddedResource Include="Assets\snip.ico" LogicalName="snip.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Snip.Core\Snip.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Snip.Tests" />
+  </ItemGroup>
+
+</Project>

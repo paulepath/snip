@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Snip's model, with no UI (docs/design.md): the document and its marks, undo, hit-testing, pixelate, capture
+       geometry, the single-instance pipe and the log. Everything here is tested in tests/Snip.Tests. -->
+  <PropertyGroup>
+    <RootNamespace>Snip</RootNamespace>
+    <AssemblyName>Snip.Core</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Snip.Tests" />
+  </ItemGroup>
+
+</Project>
