@@ -9,7 +9,7 @@
   A screenshot tool for Windows, with an editor worth using.<br>
   <a href="https://snip.e-path.co.uk"><b>snip.e-path.co.uk</b></a> ·
   <a href="https://github.com/paulepath/snip/releases/latest/download/SnipApp-win-Setup.exe">Download for Windows</a> ·
-  Made by <a href="https://www.e-path.co.uk">E-Path</a>
+  Made by <a href="https://www.e-path.co.uk">E-Path</a> (<a href="https://www.e-path.co.uk/work/snip/">the case study</a>)
 </p>
 
 ![The editor: a screenshot marked up with an arrow, a box, text and a pixelated email address](docs/screenshots/editor.png)
