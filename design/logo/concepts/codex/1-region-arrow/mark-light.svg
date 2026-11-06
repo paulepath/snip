@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title"><title id="title">Snip — Region Arrow</title>
+  <g fill="none" stroke="#0969DA" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 14H14V34M62 14H82V34M82 62V82H62M34 82H14V62"/>
+  </g>
+  <path fill="#D94B52" d="M31 60L54 37H40V27H71V58H61V44L38 67Z"/>
+</svg>

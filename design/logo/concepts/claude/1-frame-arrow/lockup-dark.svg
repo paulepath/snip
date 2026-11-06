@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="256" viewBox="0 0 320 128" role="img" aria-labelledby="title">
+  <title id="title">Snip</title>
+  <g transform="scale(0.5)">
+      <defs>
+        <linearGradient id="snip-tile-dark" x1="0" y1="8" x2="0" y2="248" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#23496C"/>
+          <stop offset="1" stop-color="#0F253C"/>
+        </linearGradient>
+      </defs>
+      <rect x="9.5" y="9.5" width="237" height="237" rx="58" fill="url(#snip-tile-dark)" stroke="#4A88AD" stroke-width="3"/>
+      <rect x="64" y="64" width="128" height="128" fill="#5AA9F2" opacity="0.14"/>
+      <path d="M64 116V64H116 M192 140V192H140" fill="none" stroke="#F2F5F8" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M181.05 65.05 80.22 160.22 95.78 175.78 190.95 74.95A7 7 0 0 0 181.05 65.05Z" fill="#F87171"/>
+      <path d="M60 138V196H118Z" fill="#F87171" stroke="#F87171" stroke-width="14" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(152 33) scale(0.62)" fill="none" stroke="#E6E8EB" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M59.5 22C55.5 13 46.5 8.5 36.5 8.5C21.5 8.5 11.5 16 11.5 28C11.5 40 21.5 44 36.5 48C51.5 52 62.5 57 62.5 71C62.5 84 51.5 91.5 36.5 91.5C24.5 91.5 14.5 86 10.5 76"/>
+    <path d="M94 34.5V91.5M94 54C94 42 103 34.5 116 34.5C129 34.5 138 42 138 54V91.5"/>
+    <path d="M170 34.5V91.5"/>
+    <path d="M198 34.5V125"/>
+    <ellipse cx="222" cy="63" rx="24" ry="28.5"/>
+    <circle cx="170" cy="9" r="10" fill="#F87171" stroke="none"/>
+  </g>
+</svg>

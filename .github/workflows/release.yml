@@ -6,7 +6,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths-ignore: ['**.md', 'docs/**', 'tools/make-icon.ps1']
+    paths-ignore: ['**.md', 'docs/**', 'tools/make-icon.ps1', 'site/**', 'site-host/**', 'scripts/deploy-site.ps1', 'tools/make_site_images.py', 'design/**']
   workflow_dispatch:
 
 permissions:

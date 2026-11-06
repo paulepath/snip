@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348 112" role="img" aria-labelledby="title"><title id="title">Snip — Folded Shot</title>
+  <g transform="translate(8 8)"><path fill="#5AA9F2" fill-rule="evenodd" d="M24 10H61L84 33V74Q84 86 72 86H24Q12 86 12 74V22Q12 10 24 10ZM26 25V71H70V40H56V25Z"/>
+  <path fill="#4CC38A" d="M62 10L84 32H66Q62 32 62 28Z"/>
+  <path fill="#5AA9F2" d="M33 58L44 45L54 55L61 48L70 59V71H26V65Z"/></g>
+  <g transform="translate(128 12)"><g fill="none" stroke="#E6E8EB" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M50 13C41 4 18 4 11 17C1 35 23 38 34 41C58 47 52 69 35 72C24 75 13 70 7 64"/>
+    <path d="M75 72V31M75 44C80 25 110 25 110 46V72"/>
+    <path d="M133 33V72"/>
+    <path d="M157 91V31M157 43C165 25 196 27 196 51C196 76 167 80 157 62"/>
+  </g>
+  <circle cx="133" cy="13" r="5.5" fill="#E6E8EB"/></g>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Active selection region wash -->
+  <rect x="15" y="15" width="34" height="34" rx="4" fill="#0969DA" fill-opacity="0.08"/>
+  
+  <!-- Subtle center crosshair reticle -->
+  <g stroke="#59636E" stroke-width="1.2" stroke-linecap="round" opacity="0.45">
+    <line x1="25" y1="32" x2="28" y2="32"/>
+    <line x1="36" y1="32" x2="39" y2="32"/>
+    <line x1="32" y1="25" x2="32" y2="28"/>
+    <line x1="32" y1="36" x2="32" y2="39"/>
+  </g>
+  
+  <!-- Four Viewfinder Crop Brackets -->
+  <g fill="none" stroke="#0969DA" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Top-Left -->
+    <path d="M 11 25 V 16 C 11 13.2 13.2 11 16 11 H 25"/>
+    <!-- Top-Right -->
+    <path d="M 39 11 H 48 C 50.8 11 53 13.2 53 16 V 25"/>
+    <!-- Bottom-Right -->
+    <path d="M 53 39 V 48 C 53 50.8 50.8 53 48 53 H 39"/>
+    <!-- Bottom-Left -->
+    <path d="M 25 53 H 16 C 13.2 53 11 50.8 11 48 V 40"/>
+  </g>
+  
+  <!-- Precision Red Annotation Arrow -->
+  <g>
+    <!-- Arrow shaft -->
+    <line x1="45" y1="19" x2="33" y2="31" stroke="#DC2626" stroke-width="4.2" stroke-linecap="round"/>
+    <!-- Arrowhead -->
+    <polygon points="28,36 39,33 32,26" fill="#DC2626"/>
+    <!-- Focal hit dot -->
+    <circle cx="27" cy="37" r="1.8" fill="#DC2626"/>
+  </g>
+</svg>

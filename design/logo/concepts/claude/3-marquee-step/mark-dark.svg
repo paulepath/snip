@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Snip</title>
+  <defs>
+    <mask id="snip-dark-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="256" height="256">
+      <rect width="256" height="256" fill="#fff"/>
+      <circle cx="200" cy="56" r="68" fill="#000"/>
+    </mask>
+  </defs>
+  <g mask="url(#snip-dark-cut)">
+    <rect x="32" y="64" width="160" height="160" fill="#5AA9F2" fill-opacity="0.16"/>
+    <path d="M32 112V64H80M192 176V224H144M80 224H32V176M96 64H128M96 224H128M32 128V160M192 128V160" fill="none" stroke="#5AA9F2" stroke-width="32" stroke-linecap="butt" stroke-linejoin="miter"/>
+  </g>
+  <circle cx="200" cy="56" r="56" fill="#F87171"/>
+  <path d="M198.1 23.5L213.7 23.5L213.7 88.5L195.5 88.5L195.5 45.6L182.5 52.1L182.5 35.2Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+</svg>

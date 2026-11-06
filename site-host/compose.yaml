@@ -1,0 +1,13 @@
+# snip.e-path.co.uk: static files on the Pi 5, behind the NAS Traefik.
+# scripts/deploy-site.ps1 stages site/ as html/ in ~/docker/snip-site.
+services:
+  web:
+    image: nginx:alpine
+    container_name: snip-site
+    restart: unless-stopped
+    ports:
+      - "8099:80"
+    # Directory mounts retain their identity while a deploy refills them in place.
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+      - ./conf:/etc/nginx/conf.d:ro

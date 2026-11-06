@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348 112" role="img" aria-labelledby="title"><title id="title">Snip — Cut Ribbon</title>
+  <g transform="translate(8 8)"><defs><mask id="snip-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="96" height="96"><path fill="white" d="M0 0H96V96H0Z"/><path fill="black" d="M10 43L18 30L86 53L78 66Z"/></mask></defs>
+  <g mask="url(#snip-cut)"><path fill="#0969DA" d="M78 12H36Q13 12 13 34Q13 48 29 54L72 69L79 51L38 37Q34 36 34 33Q34 30 38 30H78Z"/>
+  <path fill="#1A7F37" d="M18 84H60Q83 84 83 62Q83 48 67 42L24 27L17 45L58 59Q62 60 62 63Q62 66 58 66H18Z"/>
+</g></g>
+  <g transform="translate(128 12)"><g fill="none" stroke="#1F2328" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M50 13C41 4 18 4 11 17C1 35 23 38 34 41C58 47 52 69 35 72C24 75 13 70 7 64"/>
+    <path d="M75 72V31M75 44C80 25 110 25 110 46V72"/>
+    <path d="M133 33V72"/>
+    <path d="M157 91V31M157 43C165 25 196 27 196 51C196 76 167 80 157 62"/>
+  </g>
+  <circle cx="133" cy="13" r="5.5" fill="#1F2328"/></g>
+</svg>

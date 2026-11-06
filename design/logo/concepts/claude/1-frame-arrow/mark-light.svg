@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Snip</title>
+  <defs>
+    <linearGradient id="snip-tile-light" x1="0" y1="8" x2="0" y2="248" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2F81F7"/>
+      <stop offset="1" stop-color="#0757B8"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="58" fill="url(#snip-tile-light)"/>
+  <rect x="64" y="64" width="128" height="128" fill="#FFFFFF" opacity="0.12"/>
+  <path d="M64 116V64H116 M192 140V192H140" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M181.05 65.05 80.22 160.22 95.78 175.78 190.95 74.95A7 7 0 0 0 181.05 65.05Z" fill="#FF8A84"/>
+  <path d="M60 138V196H118Z" fill="#FF8A84" stroke="#FF8A84" stroke-width="14" stroke-linejoin="round"/>
+</svg>
