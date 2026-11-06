@@ -1,4 +1,6 @@
 using Avalonia;
+using Snip.Update;
+using Velopack;
 
 namespace Snip;
 
@@ -15,6 +17,12 @@ static class Program
     [STAThread]
     static int Main(string[] args)
     {
+        // Must run first: Velopack's install, update and uninstall hooks run here and may end the process.
+        VelopackApp.Build()
+            .OnAfterInstallFastCallback(_ => WindowsSetup.Installed())
+            .OnBeforeUninstallFastCallback(_ => WindowsSetup.Uninstalling())
+            .Run();
+
         var line = SnipPipe.LineFor(args);
         var answer = SnipPipe.TrySend(line ?? "running?");
         if (answer != null)

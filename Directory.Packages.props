@@ -8,6 +8,8 @@
     <PackageVersion Include="Avalonia.Desktop" Version="12.1.4" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.4" />
+    <!-- install hooks and in-app updates, as Total Git and Panehouse; .github/workflows/release.yml pins vpk to the same -->
+    <PackageVersion Include="Velopack" Version="1.2.158" />
   </ItemGroup>
   <ItemGroup Label="Pi Dash">
     <!-- the same MQTT client as the Pi Dash tray app -->

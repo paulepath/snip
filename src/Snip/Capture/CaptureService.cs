@@ -8,6 +8,9 @@ sealed class CaptureService(SnipSettings settings, Action<PixelBuffer, string> o
 {
     bool _busy;
 
+    /// <summary>Choosing or saving a shot right now.</summary>
+    public bool Busy => _busy;
+
     /// <param name="wholeMonitor">Skip choosing: the monitor under the pointer.</param>
     public async Task CaptureAsync(bool wholeMonitor = false)
     {

@@ -7,6 +7,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Snip.Capture;
 using Snip.PiDash;
+using Snip.Update;
 
 namespace Snip;
 
@@ -25,6 +26,7 @@ public partial class App : Application
     DashLink? _dashLink;
     DashScreenshot? _dashShots;
     SnipPipe? _pipe;
+    readonly UpdateService _updates = new();
     SynchronizationContext? _ui;
 
     public override void Initialize()
@@ -64,16 +66,22 @@ public partial class App : Application
                 Paste: Paste,
                 ShotsFolder: ShowShotsFolder,
                 UseDash: on => { _settings.PiDash = on; _settings.Save(); SetUpDash(); },
+                RestartToUpdate: RestartToUpdate,
                 Exit: () => Exit()), _settings.PiDash);
             _capture = new CaptureService(_settings, OpenImage, Notify);
             _hotkey = new Hotkey(PrintScreen);
             SetUpDash();
             DispatcherTimer.Run(() => { ShowStatus(); return true; }, TimeSpan.FromSeconds(2));
+            // updates: a first look soon after start, then every few hours; a downloaded one goes in when nothing is open
+            _updates.UpdateReady += _ => Dispatcher.UIThread.Post(UpdateWhenIdle);
+            DispatcherTimer.RunOnce(() => _ = _updates.CheckAndDownloadAsync(), TimeSpan.FromSeconds(30));
+            DispatcherTimer.Run(() => { _ = _updates.CheckAndDownloadAsync(); UpdateWhenIdle(); return true; }, TimeSpan.FromHours(3));
             ShowStatus();
 
             _pipe = SnipPipe.Listen(line => Dispatcher.UIThread.Invoke(() => Handle(line)));
             desktop.Exit += (_, _) =>
             {
+                _updates.ApplyOnExit();
                 _pipe?.Dispose();
                 _hotkey?.Dispose();
                 _tray?.Dispose();
@@ -134,6 +142,32 @@ public partial class App : Application
             : _dashLink.IsConnected ? $"Pi Dash: connected to {_dashLink.Host}"
             : $"Pi Dash: connecting to {_dashLink.Host}…";
         _tray?.ShowStatus(print, dash);
+        _tray?.ShowVersion(_updates.CurrentVersion, _updates.PendingVersion);
+    }
+
+    /// <summary>A downloaded update goes in straight away when Snip is idle (no editor open, nothing being captured):
+    /// it's a tray app, so a restart costs nothing. Otherwise the tray offers it, and Exit applies it.</summary>
+    void UpdateWhenIdle()
+    {
+        if (_updates.PendingVersion == null) return;
+        if (!Windows.Any() && _capture?.Busy != true)
+            RestartToUpdate();
+        else
+            ShowStatus();
+    }
+
+    void RestartToUpdate()
+    {
+        if (Windows.FirstOrDefault(w => w.HasUnsentMarks) is { } busy)
+        {
+            busy.BringUp();
+            Notify("A picture has marks you haven't copied or saved. Close it first, then update.");
+            return;
+        }
+        _pipe?.Dispose();   // the new Snip takes the pipe, the hotkey and the tray icon
+        _hotkey?.Dispose();
+        _tray?.Dispose();
+        _updates.RestartToUpdate();
     }
 
     void Notify(string text) => _tray?.Notify(text);

@@ -1,0 +1,71 @@
+# Builds Snip and publishes it as a GitHub Release, packed with Velopack, on every push to main that changes code (and by
+# hand: Actions > Release > Run workflow). Installed copies update themselves from these releases (src/Snip/Update),
+# which needs the repository public: GitHub only shows a private repository's releases with a token.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md', 'docs/**', 'tools/make-icon.ps1']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  REPO_URL: https://github.com/${{ github.repository }}
+  # The same version as the Velopack package (Directory.Packages.props).
+  VPK_VERSION: 1.2.158
+  # Not "Snip": Velopack installs into %LOCALAPPDATA%\<packId> and uninstalling deletes that folder, while
+  # %LOCALAPPDATA%\Snip holds the settings and the log.
+  PACK_ID: SnipApp
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Test
+        run: dotnet test Snip.slnx -c Release
+
+      - name: Version
+        shell: pwsh
+        run: echo "VERSION=0.1.${{ github.run_number }}" >> $env:GITHUB_ENV
+
+      - name: Publish
+        run: dotnet publish src/Snip/Snip.csproj -c Release -r win-x64 --self-contained -p:Version=${{ env.VERSION }} -o publish
+
+      # Native debug symbols (SkiaSharp, HarfBuzz) are large and no use to anyone running Snip.
+      - name: Strip debug symbols
+        shell: pwsh
+        run: Remove-Item publish/*.pdb
+
+      - name: Install vpk
+        run: dotnet tool install -g vpk --version ${{ env.VPK_VERSION }}
+
+      # The previous release lets vpk build a small delta package.
+      - name: Download previous release
+        run: vpk download github --repoUrl ${{ env.REPO_URL }} --token ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Pack
+        run: >
+          vpk pack --packId ${{ env.PACK_ID }} --packVersion ${{ env.VERSION }} --packDir publish
+          --mainExe Snip.exe --packTitle Snip --packAuthors paulepath
+          --icon src/Snip/Assets/snip.ico
+
+      - name: Upload release
+        run: >
+          vpk upload github --repoUrl ${{ env.REPO_URL }} --token ${{ secrets.GITHUB_TOKEN }}
+          --publish --tag v${{ env.VERSION }} --releaseName "Snip ${{ env.VERSION }}"

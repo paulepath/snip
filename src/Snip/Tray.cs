@@ -1,4 +1,4 @@
-using Microsoft.Win32;
+using Snip.Update;
 using Drawing = System.Drawing;
 using Forms = System.Windows.Forms;
 
@@ -6,18 +6,16 @@ namespace Snip;
 
 /// <summary>
 /// Snip in the notification area: a click captures a region (as Print Screen does); the menu has the other ways in,
-/// what Snip can see (Print Screen, the Pi Dash), Start with Windows and Exit. Notices show as its balloon.
+/// what Snip can see (Print Screen, the Pi Dash), its version and any update, Start with Windows and Exit. Notices show
+/// as its balloon.
 /// </summary>
 sealed class Tray : IDisposable
 {
-    const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    const string RunName = "Snip";
-
     readonly Forms.NotifyIcon _icon;
-    readonly Forms.ToolStripMenuItem _printLine, _dashLine, _useDash, _startup;
+    readonly Forms.ToolStripMenuItem _printLine, _dashLine, _useDash, _startup, _versionLine, _update;
 
     public sealed record Actions(Action Capture, Action CaptureScreen, Action Open, Action Paste, Action ShotsFolder,
-        Action<bool> UseDash, Action Exit);
+        Action<bool> UseDash, Action RestartToUpdate, Action Exit);
 
     public Tray(Actions actions, bool useDash)
     {
@@ -25,8 +23,10 @@ sealed class Tray : IDisposable
         _dashLine = new Forms.ToolStripMenuItem("Pi Dash: starting") { Enabled = false };
         _useDash = new Forms.ToolStripMenuItem("Use the Pi Dash") { CheckOnClick = true, Checked = useDash };
         _useDash.CheckedChanged += (_, _) => actions.UseDash(_useDash.Checked);
-        _startup = new Forms.ToolStripMenuItem("Start with Windows") { CheckOnClick = true, Checked = StartsWithWindows };
-        _startup.CheckedChanged += (_, _) => SetStartWithWindows(_startup.Checked);
+        _startup = new Forms.ToolStripMenuItem("Start with Windows") { CheckOnClick = true, Checked = WindowsSetup.StartsWithWindows };
+        _startup.CheckedChanged += (_, _) => WindowsSetup.SetStartWithWindows(_startup.Checked);
+        _versionLine = new Forms.ToolStripMenuItem("Snip") { Enabled = false };
+        _update = new Forms.ToolStripMenuItem("Restart to update", null, (_, _) => actions.RestartToUpdate()) { Visible = false };
 
         var menu = new Forms.ContextMenuStrip();
         var capture = new Forms.ToolStripMenuItem("Capture a region", null, (_, _) => actions.Capture()) { ShortcutKeyDisplayString = "Print Screen" };
@@ -44,9 +44,11 @@ sealed class Tray : IDisposable
             _useDash,
             _startup,
             new Forms.ToolStripSeparator(),
+            _versionLine,
+            _update,
             new Forms.ToolStripMenuItem("Exit", null, (_, _) => actions.Exit()),
         ]);
-        menu.Opening += (_, _) => _startup.Checked = StartsWithWindows;
+        menu.Opening += (_, _) => _startup.Checked = WindowsSetup.StartsWithWindows;
 
         using var stream = typeof(Tray).Assembly.GetManifestResourceStream("snip.ico");
         _icon = new Forms.NotifyIcon
@@ -66,24 +68,15 @@ sealed class Tray : IDisposable
         _icon.Text = "Snip: " + (print.Length > 50 ? print[..50] : print);
     }
 
+    /// <summary>The version line, and "Restart to update" while a downloaded update waits.</summary>
+    public void ShowVersion(string version, string? pending)
+    {
+        _versionLine.Text = version == "dev" ? "Snip (a dev build: no updates)" : $"Snip {version}";
+        _update.Text = $"Restart to update to {pending}";
+        _update.Visible = pending != null;
+    }
+
     public void Notify(string text) => _icon.ShowBalloonTip(3000, "Snip", text, Forms.ToolTipIcon.Info);
-
-    public static bool StartsWithWindows
-    {
-        get
-        {
-            using var key = Registry.CurrentUser.OpenSubKey(RunKey);
-            return key?.GetValue(RunName) is string;
-        }
-    }
-
-    static void SetStartWithWindows(bool on)
-    {
-        using var key = Registry.CurrentUser.CreateSubKey(RunKey);
-        if (on) key.SetValue(RunName, $"\"{Environment.ProcessPath}\"");
-        else key.DeleteValue(RunName, throwOnMissingValue: false);
-        Log.Info($"Start with Windows {(on ? "on" : "off")}");
-    }
 
     public void Dispose()
     {
