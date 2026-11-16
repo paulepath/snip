@@ -55,7 +55,9 @@ public class DashScreenshotTests : IDisposable
         _connected = true;
         var late = Make();
         var id = await late.RequestAsync(TimeSpan.FromMilliseconds(30));
-        await Task.Delay(300);
+        // the timeout fires on the thread pool: wait for it (a fixed 300 ms was too short on a busy build server)
+        for (var waited = 0; _told.Count < 2 && waited < 5000; waited += 20)
+            await Task.Delay(20);
         Assert.Equal(["The dash didn't send a screenshot."], _told.Skip(1));
         Assert.Null(late.Received(id!, Png));                                    // too late: forgotten
 
