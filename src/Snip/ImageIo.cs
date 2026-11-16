@@ -104,6 +104,10 @@ static class ImageIo
         Forms.Clipboard.SetDataObject(data, copy: true, retryTimes: 5, retryDelay: 100);
     }
 
+    /// <summary>Puts text on the clipboard. Call on the UI thread.</summary>
+    public static void CopyText(string text) =>
+        Forms.Clipboard.SetDataObject(new Forms.DataObject(Forms.DataFormats.UnicodeText, text), copy: true, retryTimes: 5, retryDelay: 100);
+
     /// <summary>An image on the clipboard, or null.</summary>
     public static PixelBuffer? Paste()
     {

@@ -15,6 +15,7 @@
       <StreamGeometry x:Key="TextIcon">M5,4 H19 V8 H17 V6 H13 V18 H15 V20 H9 V18 H11 V6 H7 V8 H5 Z</StreamGeometry>
       <StreamGeometry x:Key="HighlightIcon">M3,20 H21 V22 H3 Z M14.5,3 L20,8.5 L11.5,17 H6 V11.5 Z M8,12.3 V15 H10.7 Z</StreamGeometry>
       <StreamGeometry x:Key="PixelateIcon">M3,3 H9 V9 H3 Z M15,3 H21 V9 H15 Z M9,9 H15 V15 H9 Z M3,15 H9 V21 H3 Z M15,15 H21 V21 H15 Z</StreamGeometry>
+      <StreamGeometry x:Key="GetTextIcon">M3,3 H9 V5 H5 V9 H3 Z M15,3 H21 V9 H19 V5 H15 Z M3,15 H5 V19 H9 V21 H3 Z M19,15 H21 V21 H15 V19 H19 Z M7,8 H17 V10 H7 Z M7,11 H17 V13 H7 Z M7,14 H13 V16 H7 Z</StreamGeometry>
       <StreamGeometry x:Key="StepIcon">M3,12 A9,9 0 1,1 21,12 A9,9 0 1,1 3,12 Z M10.5,8.5 L13,7 H14 V17 H12 V9.6 L10.5,10.5 Z</StreamGeometry>
       <!-- Material Design icons, as in the Notes window -->
       <StreamGeometry x:Key="UndoIcon">M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z</StreamGeometry>

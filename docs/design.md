@@ -13,6 +13,13 @@
 | Highlight | H | A translucent box. The highlighter keeps a colour of its own (yellow unless picked). |
 | Pixelate | X | Hides what's under it in blocks. It works on the screenshot itself, not on marks drawn over it. |
 | Step | S | Numbered circles 1, 2, 3…; deleting one renumbers the rest. |
+| Get text | G | Drag over text: it's read (OCR) and copied as text, and shown in a box under the part, where a piece of it can be picked and copied instead. Esc or a click closes it. Not a mark: nothing is added to the picture. |
+
+**Get text** uses Windows' own text recognition (`Windows.Media.Ocr`, on the PC, nothing sent anywhere), which is
+why the target framework names a Windows SDK version (`net10.0-windows10.0.19041.0`, so Windows 10 2004 or later). It
+reads in the languages installed in Windows (Settings > Time & language > Language), and says so if there are none.
+`TextRecognition` reads the part as shown, so pixelated text stays hidden, and enlarges it 2x first
+(`Pixels.Enlarge`), because 11–13 px screen text is small for the recogniser.
 
 - **Colour and size** (along the top) apply to new marks and to the selected one.
 - **Copy** (Ctrl+C) gives the picture with every mark. If marks reach past the picture's edge, the copy grows to

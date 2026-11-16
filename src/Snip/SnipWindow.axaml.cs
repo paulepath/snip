@@ -36,6 +36,7 @@ public partial class SnipWindow : Window
         new(Tool.Highlight, "HighlightIcon", "Highlight", Key.H, "Drag over what to highlight."),
         new(Tool.Pixelate, "PixelateIcon", "Pixelate", Key.X, "Drag over what to hide: it's blurred into blocks."),
         new(Tool.Step, "StepIcon", "Step", Key.S, "Click to number the steps: 1, 2, 3… Deleting one renumbers the rest."),
+        new(Tool.GetText, "GetTextIcon", "Get text", Key.G, "Drag over some text: Snip reads it and copies it as text you can paste."),
     ];
 
     static readonly string[] SwatchNames = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Black", "White"];
@@ -50,6 +51,8 @@ public partial class SnipWindow : Window
     SnipDocument? _copied;
     TextBox? _textBox;
     (Pt At, int Index) _textEdit;
+    Control? _readPanel;
+    int _reading;
     bool _syncing, _allowClose;
     string? _flash;
 
@@ -117,6 +120,9 @@ public partial class SnipWindow : Window
         Canvas.SelectionChanged += ShowSelectedStyle;
         Canvas.ZoomChanged += ShowStatus;
         Canvas.TextRequested += BeginText;
+        Canvas.TextAreaChosen += area => _ = ReadTextAsync(area);
+        Canvas.AddHandler(PointerPressedEvent, (_, _) => CloseReadPanel(), RoutingStrategies.Tunnel);
+        Canvas.ZoomChanged += CloseReadPanel;
         AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
         AddHandler(KeyUpEvent, (_, e) => { if (e.Key == Key.Space) Canvas.SpaceHeld = false; }, RoutingStrategies.Tunnel);
         Closing += OnClosing;
@@ -223,6 +229,7 @@ public partial class SnipWindow : Window
     void SetTool(Tool tool)
     {
         CommitText();
+        CloseReadPanel();
         Canvas.Tool = tool;
         foreach (var (t, button) in _toolButtons)
             button.IsChecked = t == tool;
@@ -328,11 +335,143 @@ public partial class SnipWindow : Window
         }
     }
 
+    // ------------------------------------------------------------------ get text
+
+    /// <summary>Reads the text in <paramref name="area"/> (as shown, so pixelated parts stay hidden), copies it and
+    /// shows it under the area, where part of it can be picked and copied instead.</summary>
+    async Task ReadTextAsync(RectD area)
+    {
+        CloseReadPanel();
+        if (_pixels == null || _history?.Current is not { } doc) return;
+        var boxes = doc.Pixelated.ToImmutableList();
+        if (Pixels.Cut(boxes.IsEmpty ? _pixels : _pixels.WithPixelate(boxes), area) is not { } part)
+        {
+            Flash("That's outside the picture: drag over the text in it.");
+            return;
+        }
+        var reading = ++_reading;
+        Canvas.ReadArea = area;
+        Flash("Reading the text…");
+        TextRecognition.Result result;
+        try
+        {
+            result = await Task.Run(() => TextRecognition.ReadAsync(part));
+        }
+        catch (Exception ex)
+        {
+            Log.Warn($"Reading text failed: {ex.Message}");
+            if (reading == _reading) { Canvas.ReadArea = null; Flash($"Couldn't read the text: {ex.Message}"); }
+            return;
+        }
+        if (reading != _reading) return;   // another read, or the panel was closed
+        if (result.NoEngine)
+        {
+            Canvas.ReadArea = null;
+            Flash("Windows has no text recognition for your languages: add a language in Settings > Time & language.");
+            return;
+        }
+        if (result.Text.Trim().Length == 0)
+        {
+            Canvas.ReadArea = null;
+            Flash("No text found there. Try dragging a little wider round it.");
+            return;
+        }
+        try
+        {
+            ImageIo.CopyText(result.Text);
+            Flash("Copied the text: paste it wherever you want it.");
+        }
+        catch (ExternalException ex)
+        {
+            Log.Warn($"Copying text failed: {ex.Message}");
+            Flash("Read it, but couldn't copy: another app is holding the clipboard. Copy it from the box.");
+        }
+        ShowReadPanel(area, result.Text);
+    }
+
+    void ShowReadPanel(RectD area, string text)
+    {
+        var box = new TextBox
+        {
+            Text = text,
+            IsReadOnly = true,
+            AcceptsReturn = true,
+            TextWrapping = TextWrapping.Wrap,
+            FontSize = 13,
+            MaxHeight = 220,
+            MinHeight = 0,
+            BorderThickness = new Thickness(0),
+            Background = Brushes.Transparent,
+        };
+        ScrollViewer.SetVerticalScrollBarVisibility(box, ScrollBarVisibility.Auto);
+        var close = new Button { Content = "Close", FontSize = 12, Padding = new Thickness(8, 2), MinHeight = 0 };
+        close.Click += (_, _) => CloseReadPanel();
+        var copy = new Button { Content = "Copy", FontSize = 12, Padding = new Thickness(8, 2), MinHeight = 0 };
+        copy.Click += (_, _) =>
+        {
+            var pick = string.IsNullOrEmpty(box.SelectedText) ? text : box.SelectedText;
+            try { ImageIo.CopyText(pick); Flash(pick == text ? "Copied the text." : "Copied the part you picked."); }
+            catch (ExternalException) { Flash("Couldn't copy: another app is holding the clipboard. Try again."); }
+        };
+        var head = new DockPanel { Margin = new Thickness(0, 0, 0, 6) };
+        var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Children = { copy, close } };
+        DockPanel.SetDock(buttons, Dock.Right);
+        head.Children.Add(buttons);
+        head.Children.Add(new TextBlock
+        {
+            Text = "Copied as text. Pick part of it to copy just that.",
+            FontSize = 12,
+            Foreground = Palette.TextSecondary,
+            VerticalAlignment = VerticalAlignment.Center,
+            TextWrapping = TextWrapping.Wrap,
+        });
+        var bottom = Canvas.ToScreen(new Pt(area.X, area.Bottom));
+        var top = Canvas.ToScreen(new Pt(area.X, area.Y));
+        var width = Math.Clamp(Canvas.ToScreen(new Pt(area.Right, 0)).X - bottom.X, 320, 560);
+        var panel = new Border
+        {
+            Width = width,
+            Background = Palette.Panel,
+            BorderBrush = Palette.Accent,
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(6),
+            Padding = new Thickness(10, 8),
+            BoxShadow = BoxShadows.Parse("0 6 20 0 #66000000"),
+            Child = new DockPanel { Children = { head, box } },
+        };
+        DockPanel.SetDock(head, Dock.Top);
+        // under the area if it fits, otherwise above it; kept inside the canvas
+        panel.Measure(new Size(width, double.PositiveInfinity));
+        var height = panel.DesiredSize.Height;
+        var y = bottom.Y + 8 + height <= Canvas.Bounds.Height ? bottom.Y + 8 : top.Y - 8 - height;
+        Avalonia.Controls.Canvas.SetLeft(panel, Math.Clamp(bottom.X, 8, Math.Max(8, Canvas.Bounds.Width - width - 8)));
+        Avalonia.Controls.Canvas.SetTop(panel, Math.Clamp(y, 8, Math.Max(8, Canvas.Bounds.Height - height - 8)));
+        _readPanel = panel;
+        Overlay.Children.Add(panel);
+    }
+
+    void CloseReadPanel()
+    {
+        _reading++;
+        Canvas.ReadArea = null;
+        if (_readPanel is { } panel)
+        {
+            _readPanel = null;
+            Overlay.Children.Remove(panel);
+        }
+    }
+
     // ------------------------------------------------------------------ keys
 
     void OnKeyDown(object? sender, KeyEventArgs e)
     {
         if (_textBox != null) return;   // typing: its own keys
+        if (_readPanel != null && (e.Key == Key.Escape || _readPanel.IsKeyboardFocusWithin))
+        {
+            // the text read: Esc closes it, and its box keeps its own keys (Ctrl+C copies the part picked)
+            if (e.Key == Key.Escape) { CloseReadPanel(); Canvas.Focus(); e.Handled = true; }
+            return;
+        }
         var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control);
         var shift = e.KeyModifiers.HasFlag(KeyModifiers.Shift);
         var handled = true;

@@ -8,7 +8,7 @@ using Avalonia.Threading;
 
 namespace Snip;
 
-public enum Tool { Select, Crop, Arrow, Rect, Ellipse, Pen, Text, Highlight, Pixelate, Step }
+public enum Tool { Select, Crop, Arrow, Rect, Ellipse, Pen, Text, Highlight, Pixelate, Step, GetText }
 
 /// <summary>
 /// The image and its marks, zoomed to fit (or as zoomed with Ctrl+wheel) and panned with the middle button or
@@ -93,6 +93,17 @@ sealed class SnipCanvas : Control
 
     /// <summary>The Text tool clicked an empty spot (image pixels), or a label to edit (its index, else -1).</summary>
     public event Action<Pt, int>? TextRequested;
+
+    /// <summary>The Get text tool marked out a part to read (image pixels).</summary>
+    public event Action<RectD>? TextAreaChosen;
+
+    /// <summary>The part being read, or whose text is showing: outlined until set back to null.</summary>
+    public RectD? ReadArea
+    {
+        get => _readArea;
+        set { _readArea = value; InvalidateVisual(); }
+    }
+    RectD? _readArea;
 
     SnipDocument? Doc => _history?.Current;
 
@@ -188,6 +199,13 @@ sealed class SnipCanvas : Control
             context.FillRectangle(dim, new Rect(page.Left, c.Top, Math.Max(0, c.Left - page.Left), c.Height));
             context.FillRectangle(dim, new Rect(c.Right, c.Top, Math.Max(0, page.Right - c.Right), c.Height));
             context.DrawRectangle(null, new Pen(Brushes.White, 1, Dashes), c);
+        }
+
+        // Get text: the part being marked out, or read
+        if ((_tool == Tool.GetText && _start != null ? Box() : _readArea) is { } read)
+        {
+            var r = new Rect(ToScreen(new Pt(read.X, read.Y)), ToScreen(new Pt(read.Right, read.Bottom)));
+            context.DrawRectangle(new SolidColorBrush(Palette.Accent.Color, 0.12), Outline(), r);
         }
 
         if (Selected >= 0 && Selected < doc.Items.Count)
@@ -344,6 +362,11 @@ sealed class SnipCanvas : Control
         {
             if (box.W >= 2 / _scale && box.H >= 2 / _scale)
                 history.Push(doc.WithCrop(box));
+        }
+        else if (tool == Tool.GetText)
+        {
+            if (box.W >= 3 / _scale && box.H >= 3 / _scale)
+                TextAreaChosen?.Invoke(box);
         }
         else if (made != null && Big(made))
         {

@@ -15,7 +15,7 @@
 ![The editor: a screenshot marked up with an arrow, a box, text and a pixelated email address](docs/screenshots/editor.png)
 
 Print Screen, drag a region, mark it up, copy. The editor has arrows, boxes, ellipses, a pen, text, a highlighter,
-pixelate and numbered steps, with crop, undo and Copy. It looks like [Total Git](https://totalgit.e-path.co.uk) and
+pixelate and numbered steps, with crop, undo and Copy, and Get text copies the words in a shot as text. It looks like [Total Git](https://totalgit.e-path.co.uk) and
 [Panehouse](https://panehouse.e-path.co.uk) (Avalonia, the same palette), and began as the Pi Dash's screenshot editor.
 
 ## Features
@@ -26,6 +26,8 @@ pixelate and numbered steps, with crop, undo and Copy. It looks like [Total Git]
   instead (docs/pidash.md).
 - **The editor:** marks can go past the picture's edge, and Copy then gives them on white. Closing asks only if there
   are marks not yet copied or saved. Tools, keys and the design are in docs/design.md.
+- **Get text (G):** drag over text in a shot and it's copied as text you can paste, read by Windows' own text
+  recognition on the PC.
 - **The tray icon:** a click captures a region. The menu has the whole screen, Open, Paste, the shots folder, the Pi
   Dash switch and Start with Windows.
 

@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <!-- The Windows SDK version brings the WinRT APIs: Windows.Media.Ocr for the Get text tool (Windows 10 2004 on). -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
