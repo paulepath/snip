@@ -71,9 +71,11 @@ public partial class App : Application
             _capture = new CaptureService(_settings, OpenImage, Notify);
             _hotkey = new Hotkey(PrintScreen);
             SetUpDash();
-            DispatcherTimer.Run(() => { ShowStatus(); return true; }, TimeSpan.FromSeconds(2));
-            // updates: a first look soon after start, then every few hours; a downloaded one goes in when nothing is open
+            // the status every 2 s; a downloaded update goes in as soon as nothing is open (checked then too)
+            DispatcherTimer.Run(() => { ShowStatus(); UpdateWhenIdle(); return true; }, TimeSpan.FromSeconds(2));
+            // updates: a first look soon after start, then every few hours
             _updates.UpdateReady += _ => Dispatcher.UIThread.Post(UpdateWhenIdle);
+            SnipWindow.UpdateRequested += RestartToUpdate;
             DispatcherTimer.RunOnce(() => _ = _updates.CheckAndDownloadAsync(), TimeSpan.FromSeconds(30));
             DispatcherTimer.Run(() => { _ = _updates.CheckAndDownloadAsync(); UpdateWhenIdle(); return true; }, TimeSpan.FromHours(3));
             ShowStatus();
@@ -143,27 +145,33 @@ public partial class App : Application
             : $"Pi Dash: connecting to {_dashLink.Host}…";
         _tray?.ShowStatus(print, dash);
         _tray?.ShowVersion(_updates.CurrentVersion, _updates.PendingVersion);
+        foreach (var window in Windows)
+            window.ShowUpdate(_updates.PendingVersion);
     }
 
-    /// <summary>A downloaded update goes in straight away when Snip is idle (no editor open, nothing being captured):
-    /// it's a tray app, so a restart costs nothing. Otherwise the tray offers it, and Exit applies it.</summary>
+    /// <summary>A downloaded update goes in as soon as Snip is idle (no editor open, nothing being captured): it's a
+    /// tray app, so a restart costs nothing. Called every 2 s, so it follows the last editor closing. Until then each
+    /// editor and the tray offer it, and Exit applies it.</summary>
     void UpdateWhenIdle()
     {
-        if (_updates.PendingVersion == null) return;
+        if (_updates.PendingVersion == null || _restarting) return;
         if (!Windows.Any() && _capture?.Busy != true)
             RestartToUpdate();
-        else
-            ShowStatus();
     }
+
+    bool _restarting;
 
     void RestartToUpdate()
     {
+        if (_restarting) return;
         if (Windows.FirstOrDefault(w => w.HasUnsentMarks) is { } busy)
         {
             busy.BringUp();
             Notify("A picture has marks you haven't copied or saved. Close it first, then update.");
             return;
         }
+        if (_updates.PendingVersion == null) return;
+        _restarting = true;
         _pipe?.Dispose();   // the new Snip takes the pipe, the hotkey and the tray icon
         _hotkey?.Dispose();
         _tray?.Dispose();

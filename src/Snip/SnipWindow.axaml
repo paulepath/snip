@@ -63,11 +63,15 @@
 
     <!-- Status: what the tool does, and the size and zoom -->
     <Border DockPanel.Dock="Bottom" Background="{x:Static t:Palette.Toolbar}" Padding="12,4">
-      <Grid ColumnDefinitions="*,Auto,Auto">
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto">
         <TextBlock x:Name="HintText" FontSize="12" Foreground="{x:Static t:Palette.TextSecondary}" VerticalAlignment="Center"
                    TextTrimming="CharacterEllipsis" />
-        <TextBlock x:Name="SizeText" Grid.Column="1" FontSize="12" Foreground="{x:Static t:Palette.TextMuted}" Margin="16,0" VerticalAlignment="Center" />
-        <Button x:Name="ZoomButton" Grid.Column="2" FontSize="12" Padding="8,2" MinHeight="0" Background="Transparent" Focusable="False"
+        <!-- shown while a downloaded update waits; Snip also updates itself once the last editor closes -->
+        <Button x:Name="UpdateButton" Grid.Column="1" IsVisible="False" FontSize="12" Padding="8,2" MinHeight="0" Margin="16,0,0,0"
+                Foreground="{x:Static t:Palette.Accent}" Background="Transparent" BorderBrush="{x:Static t:Palette.Accent}"
+                BorderThickness="1" Focusable="False" />
+        <TextBlock x:Name="SizeText" Grid.Column="2" FontSize="12" Foreground="{x:Static t:Palette.TextMuted}" Margin="16,0" VerticalAlignment="Center" />
+        <Button x:Name="ZoomButton" Grid.Column="3" FontSize="12" Padding="8,2" MinHeight="0" Background="Transparent" Focusable="False"
                 ToolTip.Tip="Fit to the window (Ctrl+0); Ctrl+1 for 100%, Ctrl+wheel to zoom" />
       </Grid>
     </Border>

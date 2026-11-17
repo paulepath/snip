@@ -62,6 +62,19 @@ public partial class SnipWindow : Window
     /// <summary>Marks that haven't been copied or saved: closing would ask first.</summary>
     public bool HasUnsentMarks => _history is { IsDirty: true } && !ReferenceEquals(_history.Current, _copied);
 
+    /// <summary>The update button was clicked: App restarts Snip into the downloaded version.</summary>
+    public static event Action? UpdateRequested;
+
+    /// <summary>Shows "Update to x" in the status bar while a downloaded update waits (null hides it).</summary>
+    public void ShowUpdate(string? version)
+    {
+        UpdateButton.IsVisible = version != null;
+        if (version == null) return;
+        UpdateButton.Content = $"Update to {version}";
+        ToolTip.SetTip(UpdateButton, $"Snip {version} is ready. This restarts Snip, closing its windows (a picture with marks " +
+            "not yet copied or saved comes forward first). Snip also updates by itself once its last window closes.");
+    }
+
     /// <summary>For the designer and the XAML loader only.</summary>
     public SnipWindow() : this(new SnipSettings()) { }
 
@@ -116,6 +129,7 @@ public partial class SnipWindow : Window
         FolderButton.Click += (_, _) => Reveal();
         ThemeButton.Click += (_, _) => NextTheme();
         ZoomButton.Click += (_, _) => Canvas.ZoomToFit();
+        UpdateButton.Click += (_, _) => UpdateRequested?.Invoke();
 
         Canvas.SelectionChanged += ShowSelectedStyle;
         Canvas.ZoomChanged += ShowStatus;

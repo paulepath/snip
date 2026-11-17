@@ -38,8 +38,9 @@ pixelate and numbered steps, with crop, undo and Copy, and Get text copies the w
 ## Install
 
 Run `SnipApp-win-Setup.exe` from the latest [release](https://github.com/paulepath/snip/releases/latest). It installs
-to `%LOCALAPPDATA%\SnipApp`, starts Snip, starts it at sign-in, and Snip updates itself from then on. Settings > Apps
-uninstalls it. Or:
+to `%LOCALAPPDATA%\SnipApp`, starts Snip, starts it at sign-in, and Snip updates itself from then on: a new version
+goes in once no editor is open, and until then each editor has an "Update to …" button. Settings > Apps uninstalls
+it. Or:
 
 ```powershell
 pwsh tools/install.ps1                      # download and run the latest Setup.exe (removes a -Dev copy first)
